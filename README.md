@@ -1,6 +1,6 @@
 # danilokorber/export-to-env@v1
 
-![CI](https://github.com/danilokorber/export-to-env/workflows/build.yml/badge.svg)
+![CI](https://github.com/danilokorber/export-to-env/actions/workflows/build.yml/badge.svg)
 
 Using GitHub variables and secrets can be confusing, when you don't know in which context a given variable is.
 Also importing one by one can be a big effort, depending on the amount of variables you have. To make life easier, with this you can export all (or just some) of the variables into the workflow `env` context, making it easily accessible with `${{ env.VARIABLE }}`.
