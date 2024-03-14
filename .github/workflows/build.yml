@@ -1,0 +1,159 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run build pipeline
+        run: |
+          npm run all
+
+      - name: Add generated files
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add dist
+          git commit -m "Add dist files $(date)" || true
+
+      - name: Push changes
+        run: git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  test-except:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Export secrets to env variables (with except)
+        uses: ./
+        with:
+          secrets: ${{ toJSON(secrets) }}
+          except: non-existent,SECRET_2
+        env:
+          SECRET_1: 1234 # Should show override warning
+      - name: Verify secrets to env variables (with except)
+        run: |
+          [[ "${SECRET_1}" != "VALUE_1" ]] && echo "Could not export SECRET_1 secret, value is ${SECRET_1}" && exit 1
+          [[ "${SECRET_2}" != "" ]] && echo "SECRET_2 should be unset, got ${SECRET_2}" && exit 1
+          [[ "${SECRET_3}" != "VALUE_3" ]] && echo "Could not export SECRET_3 secret, value is ${SECRET_3}" && exit 1
+          true
+        shell: bash
+
+  test-only-prefix:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Export secrets to env variables (with prefix, only)
+        uses: ./
+        with:
+          prefix: PREF_
+          secrets: ${{ toJSON(secrets) }}
+          only: non-existent, SECRET_1
+      - name: Verify secrets to env variables (with prefix, only)
+        run: |
+          [[ "${SECRET_1}" != "" ]] && echo "SECRET_1 should be unset, got ${SECRET_1}" && exit 1
+          [[ "${PREF_SECRET_1}" != "VALUE_1" ]] && echo "Could not export SECRET_1 secret, value is ${SECRET_1}" && exit 1
+          [[ "${SECRET_2}" != "" ]] && echo "SECRET_2 should be unset, got ${SECRET_2}" && exit 1
+          [[ "${SECRET_3}" != "" ]] && echo "SECRET_3 should be unset, got ${SECRET_3}" && exit 1
+          [[ "${PREF_SECRET_2}" != "" ]] && echo "PREF_SECRET_2 should be unset, got ${PREF_SECRET_2}" && exit 1
+          [[ "${PREF_SECRET_3}" != "" ]] && echo "PREF_SECRET_3 should be unset, got ${PREF_SECRET_3}" && exit 1
+          true
+        shell: bash
+
+  test-override:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      SECRET_1: DONT_OVERRIDE
+    steps:
+      - uses: actions/checkout@v4
+      - name: Export secrets to env variables (override)
+        uses: ./
+        with:
+          override: false
+          secrets: ${{ toJSON(secrets) }}
+      - name: Verify secrets to env variables (override)
+        run: |
+          [[ "${SECRET_1}" != "DONT_OVERRIDE" ]] && echo "Override test failed" && exit 1
+          true
+        shell: bash
+
+  test-transform:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Export secrets to env variables (transform)
+        uses: ./
+        with:
+          transform: pascalcase
+          secrets: ${{ toJSON(secrets) }}
+      - name: Verify secrets to env variables (transform)
+        run: |
+          [[ "${Secret_1}" != "VALUE_1" ]] && echo "Could not export Secret_1 secret, value is ${Secret_1}" && exit 1
+          [[ "${Secret_2}" != "VALUE_2" ]] && echo "Could not export Secret_2 secret, value is ${Secret_2}" && exit 1
+          [[ "${Secret_3}" != "VALUE_3" ]] && echo "Could not export Secret_3 secret, value is ${Secret_3}" && exit 1
+          true
+        shell: bash
+
+  test-transform-prefix:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Export secrets to env variables (starts with, only)
+        uses: ./
+        with:
+          prefix: MY_
+          transformPrefix: false
+          transform: lowercase
+          secrets: ${{ toJSON(secrets) }}
+      - name: Verify secrets to env variables (starts with, only)
+        run: |
+          [[ "${MY_secret_1}" != "VALUE_1" ]] && echo "Could not export MY_secret_1 secret, value is ${MY_secret_1}" && exit 1
+          [[ "${MY_secret_2}" != "VALUE_2" ]] && echo "Could not export MY_secret_2 secret, value is ${MY_secret_2}" && exit 1
+          [[ "${MY_secret_3}" != "VALUE_3" ]] && echo "Could not export MY_secret_3 secret, value is ${MY_secret_3}" && exit 1
+          true
+        shell: bash
+
+  # These jobs always fail, for now we just use it to check if the output is the expected
+  test-errors:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bad secrets
+        uses: ./
+        with:
+          secrets: asdf
+        continue-on-error: true
+      - name: Bad transform value
+        uses: ./
+        with:
+          transform: bad
+          secrets: ${{ toJSON(secrets) }}
+        continue-on-error: true
