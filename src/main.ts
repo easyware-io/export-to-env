@@ -65,6 +65,9 @@ export default async function run(): Promise<void> {
       exceptList = exceptList.concat(exceptStr.split(',').map((key) => key.trim()));
     }
 
+    core.debug(`onlyList: ${onlyList}`);
+    core.debug(`exceptList: ${exceptList}`);
+
     for (const key of Object.keys(secrets)) {
       if (onlyList && !onlyList.some((item) => key.match(new RegExp(item)))) continue;
       if (exceptList.some((item) => key.match(new RegExp(item)))) continue;
@@ -94,6 +97,7 @@ export default async function run(): Promise<void> {
       }
 
       const newValue = convertFn(secrets[key], convert);
+      core.debug(`$${key}: ${newValue} (old value: ${secrets[key]})`);
 
       core.exportVariable(newKey, newValue);
       core.info(`Exported secret ${newKey}`);
@@ -128,6 +132,7 @@ export default async function run(): Promise<void> {
       }
 
       const newValue = vars[key];
+      core.debug(`$${key}: ${newValue}`);
 
       core.exportVariable(newKey, newValue);
       core.info(`Exported var ${newKey}`);
