@@ -22,7 +22,7 @@ Also importing one by one can be a big effort, depending on the amount of variab
 **... to this**
 
 ```yaml
-- uses: danilokorber/export-to-env@v1
+- uses: easyware-io/export-to-env@v1
   with:
     secrets: ${{ toJSON(secrets) }}
 ```
@@ -33,7 +33,7 @@ Also importing one by one can be a big effort, depending on the amount of variab
 
 ```yaml
 - name: Export secrets and vars to local env
-  uses: danilokorber/export-to-env@v1
+  uses: easyware-io/export-to-env@v1
   with:
     secrets: ${{ toJSON(secrets) }}
     vars: ${{ toJSON(vars) }}
@@ -46,7 +46,7 @@ Also importing one by one can be a big effort, depending on the amount of variab
 #### `except`
 
 ```yaml
-- uses: danilokorber/export-to-env@v1
+- uses: easyware-io/export-to-env@v1
   with:
     secrets: ${{ toJSON(secrets) }}
     except: MY_SECRET, DB_* # (comma separated, supports regex)
@@ -56,7 +56,7 @@ Also importing one by one can be a big effort, depending on the amount of variab
 #### `only`
 
 ```yaml
-- uses: danilokorber/export-to-env@v1
+- uses: easyware-io/export-to-env@v1
   with:
     secrets: ${{ toJSON(secrets) }}
     only: MY_SECRET, DB* # (comma separated, supports regex)
@@ -66,7 +66,7 @@ Also importing one by one can be a big effort, depending on the amount of variab
 #### `prefix`
 
 ```yaml
-- uses: danilokorber/export-to-env@v1
+- uses: easyware-io/export-to-env@v1
   with:
     secrets: ${{ toJSON(secrets) }}
     prefix: PREFIXED_ # (string)
@@ -76,7 +76,7 @@ Also importing one by one can be a big effort, depending on the amount of variab
 #### `suffix`
 
 ```yaml
-- uses: danilokorber/export-to-env@v1
+- uses: easyware-io/export-to-env@v1
   with:
     secrets: ${{ toJSON(secrets) }}
     suffix: _SUFFIXED # (string)
@@ -89,7 +89,7 @@ Also importing one by one can be a big effort, depending on the amount of variab
 env:
   MY_SECRET: DONT_OVERRIDE
 steps:
-- uses: danilokorber/export-to-env@v1
+- uses: easyware-io/export-to-env@v1
   with:
     secrets: ${{ toJSON(secrets) }}
     override: false # (boolean) default: false
@@ -100,7 +100,7 @@ steps:
 #### `transform`
 
 ```yaml
-- uses: danilokorber/export-to-env@v1
+- uses: easyware-io/export-to-env@v1
   with:
     secrets: ${{ toJSON(secrets) }}
     transform: lowercase # (lowercase | uppercase | camelcase | constant | pascalcase | pascalSnakeCase | snakecase)
@@ -110,7 +110,7 @@ steps:
 #### `transformPrefix`, `transformSuffix`
 
 ```yaml
-- uses: danilokorber/export-to-env@v1
+- uses: easyware-io/export-to-env@v1
   with:
     secrets: ${{ toJSON(secrets) }}
     prefix: PREFIXED_
@@ -122,7 +122,7 @@ steps:
 #### `convert`
 
 ```yaml
-- uses: danilokorber/export-to-env@v1
+- uses: easyware-io/export-to-env@v1
   with:
     secrets: ${{ toJSON(secrets) }}
     convert: 'base64' # (base64 | utf8)
