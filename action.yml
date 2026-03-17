@@ -36,7 +36,7 @@ inputs:
     required: false
     description: 'Either to convert the value to base64 or utf8'
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'dist/index.js'
 branding:
   icon: shield
