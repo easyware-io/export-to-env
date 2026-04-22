@@ -18,15 +18,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - name: Set Node.js 20.x
-        uses: actions/setup-node@v4
+      - name: Set Node.js 24.x
+        uses: actions/setup-node@v6
         with:
-          node-version: 20.x
+          node-version: 24.x
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run build pipeline
         run: |
@@ -48,7 +48,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Export secrets to env variables (with except)
         uses: ./
         with:
@@ -68,7 +68,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Export secrets to env variables (with prefix, only)
         uses: ./
         with:
@@ -92,7 +92,7 @@ jobs:
     env:
       SECRET_1: DONT_OVERRIDE
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Export secrets to env variables (override)
         uses: ./
         with:
@@ -108,7 +108,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Export secrets to env variables (transform)
         uses: ./
         with:
@@ -126,7 +126,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Export secrets to env variables (starts with, only)
         uses: ./
         with:
@@ -147,7 +147,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Bad secrets
         uses: ./
         with:
