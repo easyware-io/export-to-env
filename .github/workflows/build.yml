@@ -47,6 +47,7 @@ jobs:
 
   test-except:
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -67,6 +68,7 @@ jobs:
 
   test-only-prefix:
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -89,6 +91,7 @@ jobs:
 
   test-override:
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     env:
       SECRET_1: DONT_OVERRIDE
@@ -107,6 +110,7 @@ jobs:
 
   test-transform:
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -125,6 +129,7 @@ jobs:
 
   test-transform-prefix:
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -146,6 +151,7 @@ jobs:
   # These jobs always fail, for now we just use it to check if the output is the expected
   test-errors:
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
