@@ -138,6 +138,16 @@ The scripts and documentation in this project are released under the [MIT Licens
 
 Contributions are welcome!
 
+## Development
+
+Use Node.js 24 or newer for local development.
+
+```bash
+npm ci
+npm run build
+npm test
+```
+
 ## Inspiration
 
 Inspired by [oNaiPs/secrets-to-env-action](https://github.com/oNaiPs/secrets-to-env-action)

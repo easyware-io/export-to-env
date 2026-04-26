@@ -18,15 +18,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - name: Set Node.js 20.x
-        uses: actions/setup-node@v4
+      - name: Set Node.js 24.x
+        uses: actions/setup-node@v6
         with:
-          node-version: 20.x
+          node-version: 24.x
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run build pipeline
         run: |
@@ -47,9 +47,10 @@ jobs:
 
   test-except:
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Export secrets to env variables (with except)
         uses: ./
         with:
@@ -67,9 +68,10 @@ jobs:
 
   test-only-prefix:
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Export secrets to env variables (with prefix, only)
         uses: ./
         with:
@@ -89,11 +91,12 @@ jobs:
 
   test-override:
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     env:
       SECRET_1: DONT_OVERRIDE
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Export secrets to env variables (override)
         uses: ./
         with:
@@ -107,9 +110,10 @@ jobs:
 
   test-transform:
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Export secrets to env variables (transform)
         uses: ./
         with:
@@ -125,9 +129,10 @@ jobs:
 
   test-transform-prefix:
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Export secrets to env variables (starts with, only)
         uses: ./
         with:
@@ -146,9 +151,10 @@ jobs:
   # These jobs always fail, for now we just use it to check if the output is the expected
   test-errors:
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Bad secrets
         uses: ./
         with:
